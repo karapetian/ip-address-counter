@@ -32,3 +32,6 @@ replay_pid*
 
 ### APPLE specific ###
 .DS_Store
+
+# Ignore Maven dependency-reduced-pom.xml
+dependency-reduced-pom.xml
