@@ -22,7 +22,9 @@ public class ConcurrentBitSetMap {
             int ipInt = convertIPToInt(ip);
 
             RoaringBitmap bitMap = bitSetMap.get(key);
-            bitMap.add(ipInt);
+            synchronized (bitMap) {
+                bitMap.add(ipInt);
+            }
         }
     }
 
