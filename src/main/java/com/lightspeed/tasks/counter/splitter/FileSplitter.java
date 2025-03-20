@@ -1,11 +1,13 @@
 package com.lightspeed.tasks.counter.splitter;
 
-import com.lightspeed.tasks.counter.splitter.exception.FileSplittingException;
+import com.lightspeed.tasks.counter.exception.FileSplittingException;
+import com.lightspeed.tasks.counter.exception.SourceFileNotFoundException;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -58,6 +60,10 @@ public class FileSplitter {
      * @return a list of FileChunkRanges representing file chunks
      */
     public List<FileChunkRange> extractFileChunks() {
+        if (!Files.exists(sourceFile)) {
+            throw new SourceFileNotFoundException("File cannot be found: " + sourceFile);
+        }
+
         long startingPos = 0;
         List<FileChunkRange> chunkRanges = new ArrayList<>();
         while (true) {
