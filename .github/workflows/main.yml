@@ -1,7 +1,11 @@
-name: Java CI with Maven
+name: IP Address Counter CI
 
 on:
   workflow_dispatch:
+    inputs:
+      name:
+        description: 'Name/Purpose for the run'
+        required: false
   push:
     branches: [ main ]
   pull_request:

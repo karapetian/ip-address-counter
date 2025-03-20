@@ -43,7 +43,9 @@ public class FileSplitter {
             channel.read(buffer);
 
             String chunk = new String(buffer.array(), StandardCharsets.UTF_8).trim();
-            return Arrays.asList(chunk.split("\n"));
+            return Arrays.stream(chunk.split("\n"))
+                    .filter(line -> !line.trim().isEmpty())
+                    .toList();
         } catch (IOException e) {
             throw new FileSplittingException("Failed to read from " + fileChunkRange + " ranges.", e);
         }

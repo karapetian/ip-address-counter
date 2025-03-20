@@ -15,25 +15,31 @@ using minimal memory.
 2. Run the program
 
 ```
-java -jar .target/ip-address-counter-1.0.0-SNAPSHOT.jar "./path/to/your/file/ips.txt"
+java -jar target/ip-address-counter-1.0.0-SNAPSHOT.jar "./path/to/your/file/ips.txt"
 ```
-
+or if you want to set custom chunk size
+```
+java -jar target/ip-address-counter-1.0.0-SNAPSHOT.jar "./path/to/your/file/ips.txt" "10000"
+```
 ### Output
 
-The program will output the number of unique IPs, for example:
+The program will output the number of unique IPs and the execution time, for example:
 
 ```
-The unique number of IPs: 1000
+The number of unique IPs: 1000
+Execution time: 7472 ms
 ```
 
 ### Implementation Details
+As it is not efficient to read the input big file at once, it is divided into chunks. By default, each chunk contains 
+5_000_000 bytes. To change this default value, pass it as the 2nd argument.  
+For this purpose `java.nio.channels.FileChannel` is used, which lets you read from a file's specific position.
 
 ### Requirements
 
-Java 21
-
+Java 21  
 Input File: A text file containing one IPv4 address per line. The program only supports IPv4 addresses.
 
 ### Example Input File
 
-An example input file (XXX) is provided in the src/test/resources directory.
+Samples of input files are provided in the src/test/resources directory.
