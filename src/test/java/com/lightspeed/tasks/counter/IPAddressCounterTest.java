@@ -59,6 +59,24 @@ class IPAddressCounterTest {
     }
 
     @Test
+    void test3IPsWithInvalidLine() {
+        ipAddressCounter = new IPAddressCounter(
+                new FileSplitter("src/test/resources/exceptionalCases/3ips_invalid_line.txt"));
+        CountingResult countingResult = ipAddressCounter.processFile();
+
+        assertEquals(3, countingResult.uniqueIPs());
+    }
+
+    @Test
+    void test4IPsWithInvalidIPs() {
+        ipAddressCounter = new IPAddressCounter(
+                new FileSplitter("src/test/resources/exceptionalCases/4ips_invalid_ips.txt"));
+        CountingResult countingResult = ipAddressCounter.processFile();
+
+        assertEquals(4, countingResult.uniqueIPs());
+    }
+
+    @Test
     void testAbsentFile() {
         String absentFilePath = "absent.txt";
         ipAddressCounter = new IPAddressCounter(

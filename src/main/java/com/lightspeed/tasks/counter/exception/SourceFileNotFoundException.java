@@ -1,6 +1,6 @@
 package com.lightspeed.tasks.counter.exception;
 
-public class SourceFileNotFoundException extends IPCounterException {
+public class SourceFileNotFoundException extends FileProcessingException {
 
     public SourceFileNotFoundException(String message) {
         super(message);

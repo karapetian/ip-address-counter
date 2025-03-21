@@ -45,14 +45,13 @@ public class FileSplitter {
             channel.read(buffer);
 
             String chunk = new String(buffer.array(), StandardCharsets.UTF_8).trim();
-            return Arrays.stream(chunk.split("\n"))
+            return Arrays.stream(chunk.split(String.valueOf(NEW_LINE)))
                     .filter(line -> !line.trim().isEmpty())
                     .toList();
         } catch (IOException e) {
             throw new FileSplittingException("Failed to read from " + fileChunkRange + " ranges.", e);
         }
     }
-
 
     /**
      * Splits the big source file into chunks.

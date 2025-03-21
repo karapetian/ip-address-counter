@@ -2,7 +2,7 @@ package com.lightspeed.tasks.counter;
 
 import com.lightspeed.tasks.counter.counter.CountingResult;
 import com.lightspeed.tasks.counter.counter.IPAddressCounter;
-import com.lightspeed.tasks.counter.exception.IPCounterException;
+import com.lightspeed.tasks.counter.exception.FileProcessingException;
 import com.lightspeed.tasks.counter.splitter.FileSplitter;
 
 public class Application {
@@ -18,10 +18,10 @@ public class Application {
 
         try {
             CountingResult countingResult = ipAddressCounter.processFile();
+
             System.out.println("The unique number of IPs: " + countingResult.uniqueIPs());
             System.out.println("Execution time: " + countingResult.executionTime() + " ms");
-
-        } catch (IPCounterException ex) {
+        } catch (FileProcessingException ex) {
             System.err.println(ex.getMessage());
         }
     }
