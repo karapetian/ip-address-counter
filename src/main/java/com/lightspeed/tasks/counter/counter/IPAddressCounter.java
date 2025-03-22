@@ -9,11 +9,11 @@ public class IPAddressCounter {
 
     private final FileSplitter fileSplitter;
 
-    private final ConcurrentBitSetMap counter;
+    private final IPv4ConcurrentBitSetMap bitSetMap;
 
     public IPAddressCounter(FileSplitter fileSplitter) {
         this.fileSplitter = fileSplitter;
-        this.counter = new ConcurrentBitSetMap();
+        this.bitSetMap = new IPv4ConcurrentBitSetMap();
     }
 
     public CountingResult processFile() {
@@ -21,11 +21,11 @@ public class IPAddressCounter {
 
         fileSplitter.extractFileChunks()
                 .parallelStream()
-                .map(chunkRange -> fileSplitter.getLinesPerChunk(chunkRange))
-                .forEach(listOfIPs -> counter.putIPsToBitSet(listOfIPs));
+                .map(fileSplitter::getLinesPerChunk)
+                .forEach(bitSetMap::putIPsToBitSet);
 
         Instant end = Instant.now();
 
-        return new CountingResult(counter.getUniqueNumberOfIPs(), Duration.between(start, end).toMillis());
+        return new CountingResult(bitSetMap.getUniqueNumberOfIPs(), Duration.between(start, end).toMillis());
     }
 }

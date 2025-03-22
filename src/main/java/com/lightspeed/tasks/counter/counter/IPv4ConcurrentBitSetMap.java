@@ -1,16 +1,22 @@
 package com.lightspeed.tasks.counter.counter;
 
+import com.lightspeed.tasks.counter.LoggerUtil;
 import com.lightspeed.tasks.counter.exception.InvalidIPAddressException;
 import org.roaringbitmap.RoaringBitmap;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Logger;
 
-public class ConcurrentBitSetMap {
+public class IPv4ConcurrentBitSetMap {
+
+    private static final Logger LOGGER = LoggerUtil.getLogger();
+
+    private static final int MAX_OCTET_VALUE = 255;
 
     private final ConcurrentHashMap<Integer, RoaringBitmap> bitSetMap;
 
-    public ConcurrentBitSetMap() {
+    public IPv4ConcurrentBitSetMap() {
         bitSetMap = new ConcurrentHashMap<>();
         initializeMap();
     }
@@ -25,14 +31,14 @@ public class ConcurrentBitSetMap {
                     bitMap.add(shardingKeyAndValue.concatenatedOctets());
                 }
             } catch (InvalidIPAddressException e) {
-                System.out.println("Skipping invalid address: " + ip);
+                LOGGER.warning("Skipping invalid address: " + ip);
             }
         }
     }
 
     public long getUniqueNumberOfIPs() {
         return bitSetMap.values().stream()
-                .mapToLong(bitSet -> bitSet.getLongCardinality())
+                .mapToLong(RoaringBitmap::getLongCardinality)
                 .sum();
     }
 
@@ -46,7 +52,7 @@ public class ConcurrentBitSetMap {
      * @throws InvalidIPAddressException when the input is not a valid IPv4 ip or contains invalid chars
      */
     private IPAddressComponents processIpAddress(String ip) throws InvalidIPAddressException {
-        int shardingKey = 0;
+        int firstOctet = 0;
         int octet = 0;
         int octetIndex = 0;
         int result = 0;
@@ -54,13 +60,13 @@ public class ConcurrentBitSetMap {
         for (int i = 0; i < ip.length(); i++) {
             char current = ip.charAt(i);
 
-            if (isNotValidChar(current) || octet > 255) {
+            if (isNotValidChar(current) || octet > MAX_OCTET_VALUE) {
                 throw new InvalidIPAddressException("Invalid IP found");
             }
 
             if (current == '.') {
                 if (octetIndex == 0) {
-                    shardingKey = octet;
+                    firstOctet = octet;
                 } else {
                     result = result * 1000 + octet;
                 }
@@ -72,7 +78,7 @@ public class ConcurrentBitSetMap {
         }
 
         result = result * 1000 + octet;
-        return new IPAddressComponents(shardingKey, result);
+        return new IPAddressComponents(firstOctet, result);
     }
 
     private boolean isNotValidChar(char c) {
@@ -80,7 +86,7 @@ public class ConcurrentBitSetMap {
     }
 
     private void initializeMap() {
-        for (int i = 0; i <= 255; i++) {
+        for (int i = 0; i <= MAX_OCTET_VALUE; i++) {
             bitSetMap.put(i, new RoaringBitmap());
         }
     }

@@ -19,7 +19,7 @@ class IPAddressCounterTest {
                 new FileSplitter("src/test/resources/testCount/1ip.txt"));
         CountingResult countingResult = ipAddressCounter.processFile();
 
-        assertEquals(1, countingResult.uniqueIPs());
+        assertEquals(1, countingResult.uniqueIPCount());
     }
 
     @Test
@@ -28,7 +28,7 @@ class IPAddressCounterTest {
                 new FileSplitter("src/test/resources/testCount/2ips.txt"));
         CountingResult countingResult = ipAddressCounter.processFile();
 
-        assertEquals(2, countingResult.uniqueIPs());
+        assertEquals(2, countingResult.uniqueIPCount());
     }
 
     @Test
@@ -37,50 +37,58 @@ class IPAddressCounterTest {
                 new FileSplitter("src/test/resources/testCount/150ips.txt"));
         CountingResult countingResult = ipAddressCounter.processFile();
 
-        assertEquals(150, countingResult.uniqueIPs());
+        assertEquals(150, countingResult.uniqueIPCount());
     }
 
     @Test
     void testEmptyFile() {
         ipAddressCounter = new IPAddressCounter(
-                new FileSplitter("src/test/resources/exceptionalCases/empty.txt"));
+                new FileSplitter("src/test/resources/edgeCases/empty.txt"));
         CountingResult countingResult = ipAddressCounter.processFile();
 
-        assertEquals(0, countingResult.uniqueIPs());
+        assertEquals(0, countingResult.uniqueIPCount());
+    }
+
+    @Test
+    void test2IPs() {
+        ipAddressCounter = new IPAddressCounter(
+                new FileSplitter("src/test/resources/edgeCases/2ips.txt"));
+        CountingResult countingResult = ipAddressCounter.processFile();
+
+        assertEquals(2, countingResult.uniqueIPCount());
     }
 
     @Test
     void test2IPsWithBlankLine() {
         ipAddressCounter = new IPAddressCounter(
-                new FileSplitter("src/test/resources/exceptionalCases/2ips_blank_line.txt"));
+                new FileSplitter("src/test/resources/edgeCases/2ips_blank_line.txt"));
         CountingResult countingResult = ipAddressCounter.processFile();
 
-        assertEquals(2, countingResult.uniqueIPs());
+        assertEquals(2, countingResult.uniqueIPCount());
     }
 
     @Test
     void test3IPsWithInvalidLine() {
         ipAddressCounter = new IPAddressCounter(
-                new FileSplitter("src/test/resources/exceptionalCases/3ips_invalid_line.txt"));
+                new FileSplitter("src/test/resources/edgeCases/3ips_invalid_line.txt"));
         CountingResult countingResult = ipAddressCounter.processFile();
 
-        assertEquals(3, countingResult.uniqueIPs());
+        assertEquals(3, countingResult.uniqueIPCount());
     }
 
     @Test
     void test4IPsWithInvalidIPs() {
         ipAddressCounter = new IPAddressCounter(
-                new FileSplitter("src/test/resources/exceptionalCases/4ips_invalid_ips.txt"));
+                new FileSplitter("src/test/resources/edgeCases/4ips_invalid_ips.txt"));
         CountingResult countingResult = ipAddressCounter.processFile();
 
-        assertEquals(4, countingResult.uniqueIPs());
+        assertEquals(4, countingResult.uniqueIPCount());
     }
 
     @Test
     void testAbsentFile() {
         String absentFilePath = "absent.txt";
-        ipAddressCounter = new IPAddressCounter(
-                new FileSplitter(absentFilePath));
+        ipAddressCounter = new IPAddressCounter(new FileSplitter(absentFilePath));
 
         SourceFileNotFoundException exception = assertThrows(SourceFileNotFoundException.class,
                 () -> ipAddressCounter.processFile());

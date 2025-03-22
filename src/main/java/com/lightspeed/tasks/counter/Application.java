@@ -5,7 +5,11 @@ import com.lightspeed.tasks.counter.counter.IPAddressCounter;
 import com.lightspeed.tasks.counter.exception.FileProcessingException;
 import com.lightspeed.tasks.counter.splitter.FileSplitter;
 
+import java.util.logging.Logger;
+
 public class Application {
+
+    private static final Logger LOGGER = LoggerUtil.getLogger();
 
     public static void main(String[] args) {
         if (args.length == 0 || args.length > 2) {
@@ -19,10 +23,10 @@ public class Application {
         try {
             CountingResult countingResult = ipAddressCounter.processFile();
 
-            System.out.println("The unique number of IPs: " + countingResult.uniqueIPs());
-            System.out.println("Execution time: " + countingResult.executionTime() + " ms");
+            LOGGER.info("The number of unique IPs: " + countingResult.uniqueIPCount());
+            LOGGER.info("Execution time: " + countingResult.executionTime() + " ms");
         } catch (FileProcessingException ex) {
-            System.err.println(ex.getMessage());
+            LOGGER.severe(ex.getMessage());
         }
     }
 
