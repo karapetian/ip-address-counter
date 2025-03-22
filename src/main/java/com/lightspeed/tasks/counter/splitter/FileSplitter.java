@@ -88,7 +88,7 @@ public class FileSplitter {
             }
 
             channel.position(endingPos);
-            ByteBuffer buffer = ByteBuffer.allocate(1024);
+            ByteBuffer buffer = ByteBuffer.allocate(128);
             int readBytes = channel.read(buffer);
 
             if (readBytes > 0) {
